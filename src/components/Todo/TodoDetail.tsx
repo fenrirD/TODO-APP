@@ -1,42 +1,72 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import TextField from "@mui/material/TextField";
+import {Button, CardActions} from '@mui/material';
+import {useNavigate} from "react-router-dom";
+import {useEffect, useState} from "react";
+import {getTodoById} from "../../utils/apis/todoApi";
 
-const bull = (
-  <Box
-    component="span"
-sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
->
-•
-  </Box>
-);
 
-export default function BasicCard() {
+export default function TodoDetail({actionParam, handleClickEdit, selectTodoId}: any) {
+  const isDisable = actionParam !== 'edit'
+  const navigate = useNavigate();
+  const [todo, setTodo] = useState({title: '', content: '', id: ''})
+
+  useEffect(() => {
+    getTodoById(selectTodoId).then(r => {
+      const result = r.data.data
+      setTodo({
+        title: result.title,
+        content: result.content,
+        id: result.id
+      })
+    })
+  }, [selectTodoId])
+
+  const handleChange = (e: any) => {
+    setTodo({
+      ...todo,
+      [e.target.id]: e.target.value
+    })
+  }
   return (
-    <Card sx={{ minWidth: 275 }}>
-  <CardContent>
-    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-  Word of the Day
-  </Typography>
-  <Typography variant="h5" component="div">
-    be{bull}nev{bull}o{bull}lent
-  </Typography>
-  <Typography sx={{ mb: 1.5 }} color="text.secondary">
-    adjective
-    </Typography>
-    <Typography variant="body2">
-    well meaning and kindly.
-  <br />
-  {'"a benevolent smile"'}
-  </Typography>
-  </CardContent>
-  <CardActions>
-  <Button size="small">Learn More</Button>
-  </CardActions>
-  </Card>
-);
+    <div>
+      <h2>Todo Detail</h2>
+      <Card sx={{minWidth: 275}}>
+        <CardContent>
+          <div>
+            <TextField
+              margin="dense"
+              id="title"
+              label="title"
+              fullWidth
+              variant="standard"
+              value={todo.title}
+              disabled={isDisable}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <TextField
+              id="content"
+              label="content"
+              multiline
+              rows={5}
+              fullWidth
+              margin="dense"
+              disabled={isDisable}
+              value={todo.content}
+              onChange={handleChange}
+            />
+          </div>
+        </CardContent>
+        <CardActions>
+          <Button size="small" onClick={() => navigate(`/todos/edit/${selectTodoId}`)}>Edit</Button>
+          <Button size="small" disabled={isDisable} onClick={() => handleClickEdit(todo)}>Submit</Button>
+        </CardActions>
+      </Card>
+    </div>
+
+  );
 }

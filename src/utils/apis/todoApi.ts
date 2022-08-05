@@ -1,15 +1,44 @@
 import axios from "axios";
+import {Authorization} from "../../constants/constant";
 
-export const singIn = async (user:any) => {
-  console.log("signin", user)
-  const r = await axios.post("http://localhost:8080/users/login",user)
+const authorization = new Authorization();
 
-  console.log(r,'sigin')
+const API_SERVER = "http://localhost:8080"
+
+const axiosConfig = {
+  headers: {
+    authorization: authorization.token
+  }
+}
+
+export const getTodosApi = async () => {
+  console.log("todos", authorization.token)
+  const r = await axios.get(`${API_SERVER}/todos`, axiosConfig)
+  console.log(r, 'todos')
   return r
 }
 
-export const singUp = async (user:any) => {
-  console.log('siginup', user)
-  const r = await axios.post("http://localhost:8080/users/create",user)
+export const getTodoById = async (id: string) => {
+  console.log('siginup',)
+  const r = await axios.get(`${API_SERVER}/todos/${id}`, axiosConfig)
   return r
+}
+
+export const createTodo = async (todo: any) => {
+  console.log('createTodo', todo)
+  const r = await axios.post(`${API_SERVER}/todos/`, todo, {
+    headers: {
+      authorization: authorization.token
+    }
+  })
+  console.log(r, 'createTodo')
+  return r
+}
+
+export const deleteTodo = async (id: string) => {
+  return await axios.delete(`${API_SERVER}/todos/${id}`, axiosConfig)
+}
+
+export const updateTodo = async (todo: any) => {
+  return await axios.put(`${API_SERVER}/todos/${todo.id}`, todo, axiosConfig)
 }
