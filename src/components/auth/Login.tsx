@@ -9,32 +9,45 @@ import {setToken} from "../../utils/localStorages";
 import authValidation from "../../utils/validationUtil";
 import SendIcon from '@mui/icons-material/Send';
 
-export default function Login({path}:any) {
 
-  const [user, setUser] = useState({email:'', password:''});
+type LoginProps = {
+  path: string
+}
+
+export default function Login({path}: LoginProps) {
+
+  const [user, setUser] = useState({email: '', password: ''});
   // const [validation, setValidation] = useState({isEmail:true, isPassword:true})
   const [isEnable, setIsEnable] = useState(true)
   const navigate = useNavigate();
   console.log(path)
-  useEffect(()=>{
+
+  useEffect(() => {
+    console.log('path effect =>',path)
+    setUser({
+      email: '', password: ''
+    })
+  }, [path])
+
+  useEffect(() => {
     console.log('use Effect')
     const {isEmail, isPassword} = authValidation(user);
     setIsEnable(!(isEmail && isPassword))
-  },[user])
+  }, [user])
 
   const handleChange = (e: any) => {
     console.log(e, "hande Change")
     setUser({
       ...user,
-      [e.target.id] : e.target.value
+      [e.target.id]: e.target.value
     })
   }
 
-   const handleSignInClick = () => {
+  const handleSignInClick = () => {
     console.log('handleSignInClick');
 
-    singIn(user).then(r=>{
-      console.log(r,"then?")
+    singIn(user).then(r => {
+      console.log(r, "then?")
       setToken(user, r.data.token)
       navigate("/todos")
     });
@@ -42,8 +55,8 @@ export default function Login({path}:any) {
 
   const handleSignUpClick = () => {
     console.log('handleSignUpClick')
-    singUp(user).then( r => {
-      console.log('result =>',r)
+    singUp(user).then(r => {
+      console.log('result =>', r)
       navigate("/auth/signin")
     })
   }
@@ -58,8 +71,8 @@ export default function Login({path}:any) {
       autoComplete="off"
     >
       <Stack direction="row-reverse" spacing={2}>
-        <Button variant="contained" endIcon={<SendIcon />} onClick={()=>navigate('/auth/signup')}>
-          SignUp
+        <Button variant="contained" endIcon={<SendIcon/>} onClick={() => navigate(`/auth/${path === 'signin' ? "signup" : "signin"}`)}>
+          {path === 'signin' ? "Sign In" : "Sign Up"}
         </Button>
       </Stack>
       <div>
@@ -86,15 +99,15 @@ export default function Login({path}:any) {
 
         />
       </div>
-      <div >
-          <Button
-            variant="contained"
-            fullWidth={true}
-            onClick={path === 'signin' ? handleSignInClick : handleSignUpClick}
-            disabled={isEnable}
-          >
-            {path === 'signin' ? "Sign In" : "Sign Up"}
-          </Button>
+      <div>
+        <Button
+          variant="contained"
+          fullWidth={true}
+          onClick={path === 'signin' ? handleSignInClick : handleSignUpClick}
+          disabled={isEnable}
+        >
+          {path === 'signin' ? "Sign In" : "Sign Up"}
+        </Button>
       </div>
     </Box>
   );
