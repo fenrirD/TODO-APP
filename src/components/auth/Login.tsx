@@ -8,25 +8,28 @@ import {useNavigate} from "react-router-dom";
 import {setToken} from "../../utils/localStorages";
 import authValidation from "../../utils/validationUtil";
 import SendIcon from '@mui/icons-material/Send';
+import {User} from "../../utils/types";
 
 
 type LoginProps = {
   path: string
 }
 
+const initialUserState:User = {
+  email: '',
+  password: ''
+}
+
 export default function Login({path}: LoginProps) {
 
-  const [user, setUser] = useState({email: '', password: ''});
-  // const [validation, setValidation] = useState({isEmail:true, isPassword:true})
+  const [user, setUser] = useState<User>(initialUserState);
+
   const [isEnable, setIsEnable] = useState(true)
   const navigate = useNavigate();
-  console.log(path)
 
   useEffect(() => {
     console.log('path effect =>',path)
-    setUser({
-      email: '', password: ''
-    })
+    setUser(initialUserState)
   }, [path])
 
   useEffect(() => {
@@ -35,12 +38,14 @@ export default function Login({path}: LoginProps) {
     setIsEnable(!(isEmail && isPassword))
   }, [user])
 
-  const handleChange = (e: any) => {
+  const handleInputChange = (e: any) => {
     console.log(e, "hande Change")
+
     setUser({
       ...user,
       [e.target.id]: e.target.value
     })
+
   }
 
   const handleSignInClick = () => {
@@ -67,7 +72,6 @@ export default function Login({path}: LoginProps) {
       sx={{
         '& .MuiTextField-root': {m: 1, width: '50ch'},
       }}
-      // noValidate
       autoComplete="off"
     >
       <Stack direction="row-reverse" spacing={2}>
@@ -81,9 +85,10 @@ export default function Login({path}: LoginProps) {
           id="email"
           label="Required"
           variant="filled"
+          placeholder="example@example.com"
           autoFocus={true}
           fullWidth
-          onChange={handleChange}
+          onChange={handleInputChange}
           value={user.email}
         />
       </div>
@@ -94,7 +99,7 @@ export default function Login({path}: LoginProps) {
           type="password"
           autoComplete="current-password"
           variant="filled"
-          onChange={handleChange}
+          onChange={handleInputChange}
           value={user.password}
 
         />
