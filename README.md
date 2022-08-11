@@ -20,20 +20,18 @@ export default function Login({path}: LoginProps) {
   
   // 페이지 이동시 초기화 부분
   useEffect(() => {
-    console.log('path effect =>',path)
     setUser({
       email: '', password: ''
     })
   }, [path])
 
   useEffect(() => {
-    console.log('use Effect')
     const {isEmail, isPassword} = authValidation(user);
     setIsEnable(!(isEmail && isPassword))
   }, [user])
+  
   // Input의 change 이벤트
   const handleChange = (e: any) => {
-    console.log(e, "hande Change")
     setUser({
       ...user,
       [e.target.id]: e.target.value
@@ -41,36 +39,16 @@ export default function Login({path}: LoginProps) {
   }
 
   const handleSignInClick = () => {
-    console.log('handleSignInClick');
-
     singIn(user).then(r => {
-      console.log(r, "then?")
       setToken(user, r.data.token)
       navigate("/todos")
     });
   }
-
-  const handleSignUpClick = () => {
-    console.log('handleSignUpClick')
-    singUp(user).then(r => {
-      console.log('result =>', r)
-      navigate("/auth/signin")
-    })
-  }
-
+  
   return (
-    <Box
-      component="form"
-      sx={{
-        '& .MuiTextField-root': {m: 1, width: '50ch'},
-      }}
-      autoComplete="off"
-    >
-      <Stack direction="row-reverse" spacing={2}>
-        <Button variant="contained" endIcon={<SendIcon/>} onClick={() => navigate(`/auth/${path === 'signin' ? "signup" : "signin"}`)}>
-          {path === 'signin' ? "Sign In" : "Sign Up"}
-        </Button>
-      </Stack>
+    //생략
+      // 생략
+    <>
       <div>
         <TextField
           required
@@ -92,20 +70,17 @@ export default function Login({path}: LoginProps) {
           variant="filled"
           onChange={handleChange}
           value={user.password}
-
         />
       </div>
-      <div>
-        <Button
-          variant="contained"
-          fullWidth={true}
-          onClick={path === 'signin' ? handleSignInClick : handleSignUpClick}
-          disabled={isEnable}
-        >
-          {path === 'signin' ? "Sign In" : "Sign Up"}
-        </Button>
-      </div>
-    </Box>
+      <Button
+        variant="contained"
+        fullWidth={true}
+        onClick={path === 'signin' ? handleSignInClick : handleSignUpClick}
+        disabled={isEnable}
+      >
+        {path === 'signin' ? "Sign In" : "Sign Up"}
+      </Button>
+  </>
   );
 }
 ```
@@ -114,7 +89,11 @@ export default function Login({path}: LoginProps) {
 - 뭔가 난잡한 코드 및 벨리데이션의 디테일 -> CustomHook을 통해 벨리데이션 등을 추상화 해보자.? 
 - 에러에 대한 대응책이 1도없음 -> 추가 예정 
 
-#### 수정
+#### 리팩토링 
+- 고려사항
+  - email, password 두 인풋 모두 벨리데이션 기능이 필요하다고 생각이 들고, 인풋마다 벨리데이션을 주입받아서 추상화(?)하고자 했습니다.
+  - 추가로 인풋 밑에 상태가 변화 될 때마다 벨리데이션에 부합되는지 헬퍼텍스트를 추가해주기로 생각했습니다.
+  - `return` 으로는 `TextField` 컴포넌트에 필요한 옵션들과 로그인/회원가입 컴포넌트가 동일하므로 path가 변경될때 value를 초기화해주는 `reset`함수를 반환 해줍니다.
 * `customHook.ts` 생성
 ```typescript jsx
 export const useInput = (initialValue:string, inputId:string, helper:Function, validator?:Function, ) => {
@@ -143,10 +122,7 @@ export const useInput = (initialValue:string, inputId:string, helper:Function, v
   return {options :{value, onChange, helperText}, reset}
 }
 ```
-- 고려사항
-  - email, password 두 인풋 모두 벨리데이션 기능이 필요하다고 생각이 들고, 인풋마다 벨리데이션을 주입받아서 추상화(?)하고자 했습니다.
-  - 추가로 인풋 밑에 상태가 변화 될 때마다 벨리데이션에 부합되는지 헬퍼텍스트를 추가해주기로 생각했습니다.
-  - `return` 으로는 `TextField` 컴포넌트에 필요한 옵션들과 로그인/회원가입 컴포넌트가 동일하므로 path가 변경될때 value를 초기화해주는 `reset`함수를 반환 해줍니다
+
 
 - `Login` 컴포넌트
 ```typescript jsx
@@ -185,14 +161,7 @@ export default function Login({path}: LoginProps) {
       alert("error!")
     }
   }
-
-  const handleSignUpClick = () => {
-    singUp(user).then(r => {
-      console.log('result =>', r)
-      navigate("/auth/signin")
-    })
-  }
-
+  
   const renderAuthForm = () => {
     return (
       <>
@@ -223,19 +192,8 @@ export default function Login({path}: LoginProps) {
   }
 
   return (
-    <Box
-      component="form"
-      sx={{
-        '& .MuiTextField-root': {m: 1, width: '50ch'},
-      }}
-      autoComplete="off"
-    >
-      <Stack direction="row-reverse" spacing={2}>
-        <Button variant="contained" endIcon={<SendIcon/>}
-                onClick={() => navigate(`/auth/${path === 'signin' ? "signup" : "signin"}`)}>
-          {path === 'signin' ? "Sign In" : "Sign Up"}
-        </Button>
-      </Stack>
+    <>
+      //생략
       {renderAuthForm()}
       <div>
         <Button
@@ -247,7 +205,7 @@ export default function Login({path}: LoginProps) {
           {path === 'signin' ? "Sign In" : "Sign Up"}
         </Button>
       </div>
-    </Box>
+    </>
   );
 }
 ```
