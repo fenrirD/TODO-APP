@@ -3,8 +3,12 @@ import {User} from "../types";
 
 
 export const singIn = async (user:User) => {
-  const r = await clientAxios().post("/users/login",user)
-  return r
+  try {
+    const r = await clientAxios().post("/users/login",user)
+    return r
+  }catch (error) {
+    console.error(error)
+  }
 }
 
 export const singUp = async (user:any) => {

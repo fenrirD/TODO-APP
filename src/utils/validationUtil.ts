@@ -1,9 +1,9 @@
-const emailValidation = (email:string) => {
+export const emailValidation = (email:string) => {
   const regExp = /^[\w]+[@][\w]+[.][\w]+/gm;
   return regExp.test(email)
 }
 
-const passwordValidation = (password:string) => {
+export const passwordValidation = (password:string) => {
   return password.length >= 8
 }
 
