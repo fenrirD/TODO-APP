@@ -1,9 +1,13 @@
-import axios from "axios";
 import {Authorization} from "../../constants/constant";
+import customAxios from "../customAxios";
+import {getToken} from "../localStorages";
+import {TodoType} from "../types";
+import {AxiosPromise, AxiosResponse} from "axios";
 
+
+// Token의 변조를 감지하는 방법은?
+// 매 요청마다 토큰 값을 확인해야 할거 같다.
 const authorization = new Authorization();
-
-const API_SERVER = "http://localhost:8080"
 
 const axiosConfig = {
   headers: {
@@ -11,34 +15,31 @@ const axiosConfig = {
   }
 }
 
+const axios = customAxios(axiosConfig.headers)
+
+
+
+const tokenCheck = () => getToken()
+
 export const getTodosApi = async () => {
   console.log("todos", authorization.token)
-  const r = await axios.get(`${API_SERVER}/todos`, axiosConfig)
-  console.log(r, 'todos')
-  return r
+  return await axios.get(`/todos`)
 }
 
 export const getTodoById = async (id: string) => {
-  console.log('siginup',)
-  const r = await axios.get(`${API_SERVER}/todos/${id}`, axiosConfig)
+  const r = await axios.get(`/todos/${id}`)
   return r
 }
 
-export const createTodo = async (todo: any) => {
-  console.log('createTodo', todo)
-  const r = await axios.post(`${API_SERVER}/todos/`, todo, {
-    headers: {
-      authorization: authorization.token
-    }
-  })
-  console.log(r, 'createTodo')
+export const createTodo = async (todo: TodoType) => {
+  const r = await axios.post(`/todos/`, todo)
   return r
 }
 
 export const deleteTodo = async (id: string) => {
-  return await axios.delete(`${API_SERVER}/todos/${id}`, axiosConfig)
+  return axios.delete(`/todos/${id}`)
 }
 
-export const updateTodo = async (todo: any) => {
-  return await axios.put(`${API_SERVER}/todos/${todo.id}`, todo, axiosConfig)
+export const updateTodo = async (todo: TodoType) => {
+  return await axios.put(`/todos/${todo.id}`, todo)
 }

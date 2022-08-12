@@ -94,7 +94,7 @@ export default function Login({path}: LoginProps) {
   - email, password 두 인풋 모두 벨리데이션 기능이 필요하다고 생각이 들고, 인풋마다 벨리데이션을 주입받아서 추상화(?)하고자 했습니다.
   - 추가로 인풋 밑에 상태가 변화 될 때마다 벨리데이션에 부합되는지 헬퍼텍스트를 추가해주기로 생각했습니다.
   - `return` 으로는 `TextField` 컴포넌트에 필요한 옵션들과 로그인/회원가입 컴포넌트가 동일하므로 path가 변경될때 value를 초기화해주는 `reset`함수를 반환 해줍니다.
-* `customHook.ts` 생성
+* `customHook.tsx` 생성
 ```typescript jsx
 export const useInput = (initialValue:string, inputId:string, helper:Function, validator?:Function, ) => {
 

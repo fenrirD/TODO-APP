@@ -11,9 +11,8 @@ export function Router({path}:{path:string}) {
           <Route path="signup" element={<Login path={path}/>} />
         </Route>
         <Route path="todos" element={<Todo/>}/>
-        <Route path="todos/:action/:id" element={<Todo/>}/>
+        <Route path="todos/:action/:todoId" element={<Todo/>}/>
       </Routes>
     </>
     )
-
 }

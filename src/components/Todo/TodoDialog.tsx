@@ -1,43 +1,31 @@
 import * as React from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import {useEffect, useState} from "react";
-import {getTodoById} from "../../utils/apis/todoApi";
+import {TodoDialogProps} from "../../utils/types";
+import {useInput} from "../../utils/customHook";
 
-const TodoDialog = ({open, handleClose, handleClickCreate, title, selectedTodo}: any) => {
-  console.log(selectedTodo, 'TodoDialog')
-  const [todo, setTodo] = useState({title:'', content:''})
+const TodoDialog = ({open, handleClose, handleClickCreate, title}: TodoDialogProps) => {
 
-  useEffect(()=>{
-    console.log('use eff')
-    handleClickDetail(selectedTodo)
-  },[])
+  // const [todo, setTodo] = useState({title: '', content: ''})
 
-  const handleClickDetail = (id:string) => {
-    console.log(id)
-    if(id) {
-      getTodoById(id).then(r=> {
-        console.log('handleClickDetail', r)
-        const data = r.data.data
-        setTodo({
-          ...data,
-        })
-      })
-    }
+  const titleInput = useInput('', 'title',)
+  const contentInput = useInput('', 'title',)
 
-  }
+  const todo = useMemo(()=>({
+    title:titleInput.options.value,
+    content:contentInput.options.value
+  }),[titleInput.options.value, contentInput.options.value])
 
-  const handleChange = (e: any) => {
-    console.log(e, "hande Change")
-    setTodo({
-      ...todo,
-      [e.target.id] : e.target.value
-    })
-  }
+
+  useEffect(() => {
+    titleInput.reset()
+    contentInput.reset()
+  }, [open])
 
   return (
     <div>
@@ -51,8 +39,7 @@ const TodoDialog = ({open, handleClose, handleClickCreate, title, selectedTodo}:
             label="title"
             fullWidth
             variant="standard"
-            value={todo.title}
-            onChange={handleChange}
+            {...titleInput.options}
           />
           <TextField
             id="content"
@@ -61,14 +48,12 @@ const TodoDialog = ({open, handleClose, handleClickCreate, title, selectedTodo}:
             rows={5}
             fullWidth
             margin="dense"
-            value={todo.content}
-            onChange={handleChange}
+            {...contentInput.options}
           />
-
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={()=>handleClickCreate(todo)}>create</Button>
+          <Button onClick={() => handleClickCreate(todo)}>create</Button>
         </DialogActions>
       </Dialog>
     </div>

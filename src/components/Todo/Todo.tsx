@@ -1,29 +1,30 @@
-import {useEffect, useState} from "react";
-import * as React from 'react';
-import {createTodo, deleteTodo, getTodoById, getTodosApi, updateTodo} from "../../utils/apis/todoApi";
+import * as React from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {createTodo, deleteTodo, getTodosApi, updateTodo} from "../../utils/apis/todoApi";
 import Button from "@mui/material/Button";
 import TodoDialog from "./TodoDialog";
 import Box from "@mui/material/Box";
-import {Container, Stack} from "@mui/material";
+import {Stack} from "@mui/material";
 import TodoItems from "./TodoItems";
 import TodoDetail from "./TodoDetail";
 import {useNavigate, useParams} from "react-router-dom";
 import {removeLocalStorage} from "../../utils/localStorages";
+import {TodoType} from "../../utils/types";
 
 const Todo = () => {
-  let {action, id}: any = useParams();
-  const [isCreateTodo, setIsCreateTodo] = React.useState(false);
+
+  let {action, todoId} = useParams();
+  // isCreateTodo => isOpenTodoDialog 가 맞을거같다.
+  const [isOpenTodoDialog, setIsOpenTodoDialog] = React.useState(false);
 
   const navigate = useNavigate();
+  const [todos, setTodos] = useState<[TodoType]|[]>([]);
 
-  const [todos, setTodos] = useState([]);
-
-  console.log(id, action, 'param?')
-  // @ts-ignore
   const handleClickLogout = () => {
     removeLocalStorage()
     navigate("/auth/signin")
   }
+
   const getTodos = () => {
     getTodosApi().then(r => {
       console.log('getTodos')
@@ -36,18 +37,20 @@ const Todo = () => {
   }, [])
 
 
-  const handleClickOpen = () => {
-    setIsCreateTodo(true);
-  };
+  const handleClickOpen = useCallback(() => {
+    console.log('handle open!')
+    setIsOpenTodoDialog(true);
+  },[]);
 
   const handleClose = () => {
-    setIsCreateTodo(false);
+    console.log('handle close!')
+    setIsOpenTodoDialog(false);
   };
 
   const handleClickCreate = (todo: any) => {
     createTodo(todo).then(r => {
       console.log(r)
-      setIsCreateTodo(false);
+      setIsOpenTodoDialog(false);
       getTodos()
     })
   }
@@ -61,12 +64,12 @@ const Todo = () => {
     })
   }
 
-  const handleClickDelete = (id: string) => {
+  const handleClickDelete = useCallback( (id: string) => {
     console.log('handleClickDelete', id)
     deleteTodo(id).then(r => {
       getTodos()
     })
-  }
+  },[])
 
   return (
     <>
@@ -75,7 +78,6 @@ const Todo = () => {
         sx={{
           '& .MuiTextField-root': {m: 1, width: '50ch'},
         }}
-        // noValidate
         autoComplete="off"
       >
         <Stack direction="row-reverse" spacing={2}>
@@ -88,15 +90,15 @@ const Todo = () => {
             Add Data
           </Button>
         </Stack>
-        <TodoDialog open={isCreateTodo} handleClose={handleClose} handleClickCreate={handleClickCreate}
+        <TodoDialog open={isOpenTodoDialog} handleClose={handleClose} handleClickCreate={handleClickCreate}
                     title="Add Todo"/>
         <div style={{display: 'flex', backgroundColor: '#12121'}}>
-          <TodoItems todos={todos} handleClickDelete={handleClickDelete} selectTodoId={id}/>
+          <TodoItems todos={todos} handleClickDelete={handleClickDelete} selectTodoId={todoId}/>
         </div>
         {
           action && (
             <div style={{backgroundColor: '#12121'}}>
-              <TodoDetail actionParam={action} handleClickEdit={handleClickEdit} selectTodoId={id}/>
+              <TodoDetail actionParam={action} handleClickEdit={handleClickEdit} selectTodoId={todoId}/>
             </div>
           )
         }

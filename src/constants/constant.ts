@@ -21,6 +21,4 @@ export class Authorization {
     this.token = getToken()
   }
 
-
-
 }

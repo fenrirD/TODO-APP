@@ -10,7 +10,7 @@ import authValidation, {emailValidation, passwordValidation} from "../../utils/v
 import SendIcon from '@mui/icons-material/Send';
 import {User} from "../../utils/types";
 import {useInput} from "../../utils/customHook";
-import {CustomHelperText} from "../input/CustomHelperText";
+import {CustomHelperText} from "../etc/CustomHelperText";
 
 
 type LoginProps = {
@@ -53,11 +53,10 @@ export default function Login({path}: LoginProps) {
     }
   }
 
-  const handleSignUpClick = () => {
-    singUp(user).then(r => {
-      console.log('result =>', r)
-      navigate("/auth/signin")
-    })
+  const handleSignUpClick = async () => {
+    const res = await singUp(user)
+    console.log('result =>', res)
+    navigate("/auth/signin")
   }
 
   const renderAuthForm = () => {
@@ -67,7 +66,7 @@ export default function Login({path}: LoginProps) {
           <TextField
             required
             id="email"
-            label="Required"
+            label="Email"
             variant="filled"
             placeholder="example@example.com"
             autoFocus={true}
