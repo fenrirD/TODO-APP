@@ -1,16 +1,16 @@
 import * as React from 'react';
+import {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import {Button, Stack} from "@mui/material";
-import {useEffect, useState} from "react";
-import {singIn, singUp} from "../../utils/apis/authApi";
 import {useNavigate} from "react-router-dom";
-import {setToken} from "../../utils/localStorages";
 import authValidation, {emailValidation, passwordValidation} from "../../utils/validationUtil";
 import SendIcon from '@mui/icons-material/Send';
 import {User} from "../../utils/types";
-import {useInput} from "../../utils/customHook";
+import {useInput} from "../../utils/hooks/useInput";
 import {CustomHelperText} from "../etc/CustomHelperText";
+import useSignIn from "../../utils/hooks/useSignIn";
+import useSignUp from "../../utils/hooks/useSignUp";
 
 
 type LoginProps = {
@@ -28,6 +28,9 @@ export default function Login({path}: LoginProps) {
   const email = emailInput.options.value
   const password = passwordInput.options.value
 
+  const signIn = useSignIn()
+  const signUp = useSignUp()
+
   const user: User = {
     email,
     password,
@@ -44,19 +47,11 @@ export default function Login({path}: LoginProps) {
   }, [email, password])
 
   const handleSignInClick = async () => {
-    const res = await singIn(user)
-    if (res) {
-      setToken(user, res.data.token)
-      navigate("/todos")
-    } else {
-      alert("error!")
-    }
+    signIn.mutate(user)
   }
 
   const handleSignUpClick = async () => {
-    const res = await singUp(user)
-    console.log('result =>', res)
-    navigate("/auth/signin")
+    signUp.mutate(user)
   }
 
   const renderAuthForm = () => {

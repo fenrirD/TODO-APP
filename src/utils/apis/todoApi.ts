@@ -18,10 +18,23 @@ const axiosConfig = {
 const axios = customAxios(axiosConfig.headers)
 
 
+// 이 부분에 검증 부분 추가해주면 참 좋을듯.! Token 에 대한
+axios.interceptors.request.use((config)=>{
+  console.log('axios config', config)
+  return config
+})
 
 const tokenCheck = () => getToken()
 
-export const getTodosApi = async () => {
+const  fun = async () => {
+  return new Promise(resolve => {
+      setTimeout(()=>{
+        resolve('reslove')
+      },5000)
+  })
+}
+
+export const getTodos = async () => {
   console.log("todos", authorization.token)
   return await axios.get(`/todos`)
 }
@@ -37,7 +50,7 @@ export const createTodo = async (todo: TodoType) => {
 }
 
 export const deleteTodo = async (id: string) => {
-  return axios.delete(`/todos/${id}`)
+  return await axios.delete(`/todos/${id}`)
 }
 
 export const updateTodo = async (todo: TodoType) => {

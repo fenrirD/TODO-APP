@@ -7,7 +7,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import {TodoDialogProps} from "../../utils/types";
-import {useInput} from "../../utils/customHook";
+import {useInput} from "../../utils/hooks/useInput";
 
 const TodoDialog = ({open, handleClose, handleClickCreate, title}: TodoDialogProps) => {
 

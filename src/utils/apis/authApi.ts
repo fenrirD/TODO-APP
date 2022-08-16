@@ -11,7 +11,7 @@ export const singIn = async (user: User) => {
   }
 }
 
-export const singUp = async (user: any) => {
+export const singUp = async (user: User) => {
   try {
     const r = await customAxios().post("/users/create", user)
     return r

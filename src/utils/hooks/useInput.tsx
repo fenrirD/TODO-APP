@@ -1,12 +1,17 @@
-import React, {useState} from "react";
-import {HElPER_TEXT} from "../constants/constant";
+import React, {useEffect, useState} from "react";
+import {HElPER_TEXT} from "../../constants/constant";
 
 export const useInput = (initialValue:string, inputId:string, helper?:Function, validator?:Function, ) => {
 
   const [value, setValue] = useState(initialValue)
   const targetId = inputId.toUpperCase()
   const [helperText, setHelperText] = useState<React.ReactNode>(HElPER_TEXT[targetId])
-  console.log(value,"value!!")
+  // console.log('initialValue:', initialValue, "value:",value)
+
+  useEffect(() => {
+    // console.log("initialValue - useEffect =>", initialValue)
+    setValue(initialValue);
+  },[initialValue]);
 
   const onChange = (event:any) => {
 
@@ -25,6 +30,6 @@ export const useInput = (initialValue:string, inputId:string, helper?:Function, 
   const reset = () => {
     setValue(initialValue)
   }
-  console.log(initialValue, value, "useInput")
+
   return {options :{value, onChange, helperText}, reset}
 }
