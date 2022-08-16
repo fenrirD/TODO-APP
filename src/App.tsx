@@ -4,9 +4,10 @@ import {useLocation, useNavigate} from "react-router-dom";
 import Box from "@mui/material/Box";
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {getToken} from "./utils/localStorages";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {HEADER_TITLE} from "./constants/constant";
 import {Router} from "./router";
+import {CustomStoreContext} from "./utils/customContext";
 
 const darkTheme = createTheme({
   palette: {
@@ -19,6 +20,8 @@ function App() {
   const location = useLocation();
   const [token, setToken] = useState<string>(getToken()?.token)
   const paths = location.pathname.split("/")
+  const context = useContext(CustomStoreContext)
+  console.log('app:',context, context.getState())
 
   useEffect(()=> {
     console.log('App component - effect')
