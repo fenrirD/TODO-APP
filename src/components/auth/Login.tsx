@@ -72,7 +72,7 @@ export default function Login({path}: LoginProps) {
     >
       <Stack direction="row-reverse" spacing={2}>
         <Button variant="contained" endIcon={<SendIcon/>} onClick={() => navigate(`/auth/${path === 'signin' ? "signup" : "signin"}`)}>
-          {path === 'signin' ? "Sign In" : "Sign Up"}
+          {path === 'signin' ? "Sign Up" : "Sign In"}
         </Button>
       </Stack>
       <div>
@@ -96,7 +96,6 @@ export default function Login({path}: LoginProps) {
           variant="filled"
           onChange={handleChange}
           value={user.password}
-
         />
       </div>
       <div>

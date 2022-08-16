@@ -7,6 +7,7 @@ export const HEADER_TITLE:any = {
 }
 
 export class Authorization {
+
   token
 
   constructor() {
