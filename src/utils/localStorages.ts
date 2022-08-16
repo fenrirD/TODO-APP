@@ -10,6 +10,7 @@ export const setToken = (user:any, token: string) => {
     token
   }))
 }
+
 export const removeLocalStorage = () =>{
   window.localStorage.clear()
 }

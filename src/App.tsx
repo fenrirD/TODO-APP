@@ -1,13 +1,12 @@
 // import logo from './logo.svg';
 import './App.css';
-import {Route, Routes, useLocation, useNavigate} from "react-router-dom";
-import Login from "./components/auth/Login";
+import {useLocation, useNavigate} from "react-router-dom";
 import Box from "@mui/material/Box";
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {getToken} from "./utils/localStorages";
 import {useEffect, useState} from "react";
 import {HEADER_TITLE} from "./constants/constant";
-import Todo from "./components/Todo/Todo";
+import {Router} from "./router";
 
 const darkTheme = createTheme({
   palette: {
@@ -38,14 +37,7 @@ function App() {
           <h1>{header || "Welcome to Todo App!"}</h1>
         </header>
         <div className="App-body">
-          <Routes>
-            <Route path="auth">
-              <Route path="signin" element={<Login path={lastPath}/>} />
-              <Route path="signup" element={<Login path={lastPath}/>} />
-            </Route>
-            <Route path="todos" element={<Todo/>}/>
-            <Route path="todos/:action/:id" element={<Todo/>}/>
-          </Routes>
+          <Router path={lastPath}/>
         </div>
       </Box>
     </ThemeProvider>

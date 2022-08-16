@@ -1,15 +1,21 @@
-import axios from "axios";
+import customAxios from "../customAxios";
+import {User} from "../types";
 
-export const singIn = async (user:any) => {
-  console.log("signin", user)
-  const r = await axios.post("http://localhost:8080/users/login",user)
 
-  console.log(r,'sigin')
-  return r
+export const singIn = async (user: User) => {
+  try {
+    const r = await customAxios().post("/users/login", user)
+    return r
+  } catch (error) {
+    console.error(error)
+  }
 }
 
-export const singUp = async (user:any) => {
-  console.log('siginup', user)
-  const r = await axios.post("http://localhost:8080/users/create",user)
-  return r
+export const singUp = async (user: User) => {
+  try {
+    const r = await customAxios().post("/users/create", user)
+    return r
+  } catch (error) {
+    console.error(error)
+  }
 }

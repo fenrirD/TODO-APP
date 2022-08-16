@@ -1,13 +1,16 @@
 import * as React from 'react';
+import {useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import {Button, Stack} from "@mui/material";
-import {useEffect, useState} from "react";
-import {singIn, singUp} from "../../utils/apis/authApi";
 import {useNavigate} from "react-router-dom";
-import {setToken} from "../../utils/localStorages";
-import authValidation from "../../utils/validationUtil";
+import authValidation, {emailValidation, passwordValidation} from "../../utils/validationUtil";
 import SendIcon from '@mui/icons-material/Send';
+import {User} from "../../utils/types";
+import {useInput} from "../../utils/hooks/useInput";
+import {CustomHelperText} from "../etc/CustomHelperText";
+import useSignIn from "../../utils/hooks/useSignIn";
+import useSignUp from "../../utils/hooks/useSignUp";
 
 
 type LoginProps = {
@@ -16,49 +19,68 @@ type LoginProps = {
 
 export default function Login({path}: LoginProps) {
 
-  const [user, setUser] = useState({email: '', password: ''});
-  // const [validation, setValidation] = useState({isEmail:true, isPassword:true})
-  const [isEnable, setIsEnable] = useState(true)
+  const [isSubmitButtonEnable, setIsSubmitButtonEnable] = useState(true)
   const navigate = useNavigate();
-  console.log(path)
+
+  const emailInput = useInput('', 'email', CustomHelperText, emailValidation);
+  const passwordInput = useInput('', 'password', CustomHelperText, passwordValidation);
+
+  const email = emailInput.options.value
+  const password = passwordInput.options.value
+
+  const signIn = useSignIn()
+  const signUp = useSignUp()
+
+  const user: User = {
+    email,
+    password,
+  }
 
   useEffect(() => {
-    console.log('path effect =>',path)
-    setUser({
-      email: '', password: ''
-    })
+    emailInput.reset()
+    passwordInput.reset()
   }, [path])
 
   useEffect(() => {
-    console.log('use Effect')
     const {isEmail, isPassword} = authValidation(user);
-    setIsEnable(!(isEmail && isPassword))
-  }, [user])
+    setIsSubmitButtonEnable(!(isEmail && isPassword))
+  }, [email, password])
 
-  const handleChange = (e: any) => {
-    console.log(e, "hande Change")
-    setUser({
-      ...user,
-      [e.target.id]: e.target.value
-    })
+  const handleSignInClick = async () => {
+    signIn.mutate(user)
   }
 
-  const handleSignInClick = () => {
-    console.log('handleSignInClick');
-
-    singIn(user).then(r => {
-      console.log(r, "then?")
-      setToken(user, r.data.token)
-      navigate("/todos")
-    });
+  const handleSignUpClick = async () => {
+    signUp.mutate(user)
   }
 
-  const handleSignUpClick = () => {
-    console.log('handleSignUpClick')
-    singUp(user).then(r => {
-      console.log('result =>', r)
-      navigate("/auth/signin")
-    })
+  const renderAuthForm = () => {
+    return (
+      <>
+        <div>
+          <TextField
+            required
+            id="email"
+            label="Email"
+            variant="filled"
+            placeholder="example@example.com"
+            autoFocus={true}
+            fullWidth
+            {...emailInput.options}
+          />
+        </div>
+        <div>
+          <TextField
+            id="password"
+            label="Password"
+            type="password"
+            autoComplete="current-password"
+            variant="filled"
+            {...passwordInput.options}
+          />
+        </div>
+      </>
+    )
   }
 
   return (
@@ -67,7 +89,6 @@ export default function Login({path}: LoginProps) {
       sx={{
         '& .MuiTextField-root': {m: 1, width: '50ch'},
       }}
-      // noValidate
       autoComplete="off"
     >
       <Stack direction="row-reverse" spacing={2}>
@@ -75,35 +96,13 @@ export default function Login({path}: LoginProps) {
           {path === 'signin' ? "Sign Up" : "Sign In"}
         </Button>
       </Stack>
-      <div>
-        <TextField
-          required
-          id="email"
-          label="Required"
-          variant="filled"
-          autoFocus={true}
-          fullWidth
-          onChange={handleChange}
-          value={user.email}
-        />
-      </div>
-      <div>
-        <TextField
-          id="password"
-          label="Password"
-          type="password"
-          autoComplete="current-password"
-          variant="filled"
-          onChange={handleChange}
-          value={user.password}
-        />
-      </div>
+      {renderAuthForm()}
       <div>
         <Button
           variant="contained"
           fullWidth={true}
           onClick={path === 'signin' ? handleSignInClick : handleSignUpClick}
-          disabled={isEnable}
+          disabled={isSubmitButtonEnable}
         >
           {path === 'signin' ? "Sign In" : "Sign Up"}
         </Button>
