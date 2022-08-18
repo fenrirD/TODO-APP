@@ -4,10 +4,13 @@ import {useLocation, useNavigate} from "react-router-dom";
 import Box from "@mui/material/Box";
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {getToken} from "./utils/localStorages";
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {HEADER_TITLE} from "./constants/constant";
 import {Router} from "./router";
 import {CustomStoreContext} from "./utils/customContext";
+import useSnackbar from "./utils/hooks/useSnackbar";
+import CustomSnackbar from "./components/CustomSnackbar/CustomSnackbar";
+import {CustomSnackbarContext} from "./components/CustomSnackbar/CustomSnackbarContext";
 
 const darkTheme = createTheme({
   palette: {
@@ -21,8 +24,13 @@ function App() {
   const [token, setToken] = useState<string>(getToken()?.token)
   const paths = location.pathname.split("/")
   const context = useContext(CustomStoreContext)
+  const snackbarContext = useContext(CustomSnackbarContext)
+
+  console.log('app', snackbarContext)
+  const {on} = useSnackbar()
   console.log('app:',context, context.getState())
 
+  // setTimeout(()=>on(),1000)
   useEffect(()=> {
     console.log('App component - effect')
     const r = token ? location.pathname : "/auth/signin"
@@ -39,10 +47,14 @@ function App() {
         <header className="App-header">
           <h1>{header || "Welcome to Todo App!"}</h1>
         </header>
+        <div>
+          <button onClick={()=>snackbarContext.on()}>버튼</button>
+        </div>
         <div className="App-body">
           <Router path={lastPath}/>
         </div>
       </Box>
+      <CustomSnackbar />
     </ThemeProvider>
   );
 }

@@ -36,12 +36,11 @@ const  fun = async () => {
 
 export const getTodos = async () => {
   console.log("todos", authorization.token)
-  return await axios.get(`/todos`)
+  return axios.get(`/todos`)
 }
 
 export const getTodoById = async (id: string) => {
-  const r = await axios.get(`/todos/${id}`)
-  return r
+  return axios.get(`/todos/${id}`)
 }
 
 export const createTodo = async (todo: TodoType) => {

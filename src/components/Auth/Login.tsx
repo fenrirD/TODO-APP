@@ -13,11 +13,11 @@ import useSignIn from "../../utils/hooks/useSignIn";
 import useSignUp from "../../utils/hooks/useSignUp";
 
 
-type LoginProps = {
+type props = {
   path: string
 }
 
-export default function Login({path}: LoginProps) {
+export default function Login({path}: props) {
 
   const [isSubmitButtonEnable, setIsSubmitButtonEnable] = useState(true)
   const navigate = useNavigate();
@@ -46,11 +46,11 @@ export default function Login({path}: LoginProps) {
     setIsSubmitButtonEnable(!(isEmail && isPassword))
   }, [email, password])
 
-  const handleSignInClick = async () => {
+  const handleSignInClick = () => {
     signIn.mutate(user)
   }
 
-  const handleSignUpClick = async () => {
+  const handleSignUpClick = () => {
     signUp.mutate(user)
   }
 

@@ -3,12 +3,14 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from "react-router-dom";
+import {BrowserRouter} from "react-router-dom";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import {counter, counter2, customCreateStore} from "./utils/customRedux";
 import {CustomStoreContext} from "./utils/customContext";
-import {combineReducers} from "@reduxjs/toolkit";
+import CustomSnackbarProvider from "./components/CustomSnackbar/CustomSnackbarProvider";
+import useSignIn from "./utils/hooks/useSignIn";
+import {useError} from "./utils/snackbarHandler";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
@@ -40,24 +42,32 @@ store.dispatch({type:'counter2.INCREMENT',state:0})
 console.log(111111)
 console.log(store.getState())
 
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       suspense: true,
       retry: 0,
+      onError: useError
+    },
+    mutations: {
+      onError: useError
     }
-  }
+  },
+
 });
 
 root.render(
   <React.StrictMode>
     <CustomStoreContext.Provider value={store}>
+      <CustomSnackbarProvider>
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen={false} />
           <App />
         </QueryClientProvider>
       </BrowserRouter>
+      </CustomSnackbarProvider>
     </CustomStoreContext.Provider>
   </React.StrictMode>
 );
