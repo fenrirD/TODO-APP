@@ -2,6 +2,7 @@ import {Authorization} from "../../constants/constant";
 import customAxios from "../customAxios";
 import {getToken} from "../localStorages";
 import {TodoType} from "../types";
+import {useNavigate} from "react-router-dom";
 
 
 // Token의 변조를 감지하는 방법은?
@@ -20,10 +21,18 @@ const axios = customAxios(axiosConfig.headers)
 // 이 부분에 검증 부분 추가해주면 참 좋을듯.! Token 에 대한
 axios.interceptors.request.use((config)=>{
   console.log('axios config', config)
+  // const navigate = useNavigate()
+  // const tokenCheck = () => getToken()
+  // console.log(tokenCheck())
+  // if(!tokenCheck()) {
+  //   throw new Error("에러야잉")
+  // }
   return config
+},error => {
+  console.log(error,"error")
 })
 
-const tokenCheck = () => getToken()
+
 
 export const getTodos = async () => {
   return axios.get(`/todos`)
