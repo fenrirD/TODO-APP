@@ -1,5 +1,5 @@
 import {Route, Routes} from "react-router-dom";
-import Login from "../components/auth/Login";
+import Login from "../components/auth";
 import Todo from "../components/Todo/Todo";
 
 export function Router({path}: { path: string }) {

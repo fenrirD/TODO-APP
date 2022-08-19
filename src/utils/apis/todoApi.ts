@@ -2,7 +2,9 @@ import {Authorization} from "../../constants/constant";
 import customAxios from "../customAxios";
 import {getToken} from "../localStorages";
 import {TodoType} from "../types";
-import {AxiosPromise, AxiosResponse} from "axios";
+import {useNavigate} from "react-router-dom";
+import {history} from "../../index";
+import {snackbar} from "../../App";
 
 
 // Token의 변조를 감지하는 방법은?
@@ -21,38 +23,36 @@ const axios = customAxios(axiosConfig.headers)
 // 이 부분에 검증 부분 추가해주면 참 좋을듯.! Token 에 대한
 axios.interceptors.request.use((config)=>{
   console.log('axios config', config)
+  // const navigate = useNavigate()
+  const tokenCheck = () => getToken()
+  console.log(tokenCheck())
+  if(!tokenCheck()) {
+    snackbar.dispatch({type: 'ON', payload:{severity:'warning', message:"Token이 유효하지 않습니다.!"}})
+    history.push("/auth/signin")
+  }
   return config
+},error => {
+  console.log(error,"error")
 })
 
-const tokenCheck = () => getToken()
 
-const  fun = async () => {
-  return new Promise(resolve => {
-      setTimeout(()=>{
-        resolve('reslove')
-      },5000)
-  })
-}
 
 export const getTodos = async () => {
-  console.log("todos", authorization.token)
-  return await axios.get(`/todos`)
+  return axios.get(`/todos`)
 }
 
 export const getTodoById = async (id: string) => {
-  const r = await axios.get(`/todos/${id}`)
-  return r
+  return axios.get(`/todos/${id}`)
 }
 
 export const createTodo = async (todo: TodoType) => {
-  const r = await axios.post(`/todos/`, todo)
-  return r
+  return axios.post(`/todos/`, todo)
 }
 
 export const deleteTodo = async (id: string) => {
-  return await axios.delete(`/todos/${id}`)
+  return axios.delete(`/todos/${id}`)
 }
 
 export const updateTodo = async (todo: TodoType) => {
-  return await axios.put(`/todos/${todo.id}`, todo)
+  return axios.put(`/todos/${todo.id}`, todo)
 }

@@ -7,9 +7,11 @@ export default function useSignIn() {
   const navigate = useNavigate()
   return useMutation(singIn,{
     onSuccess: (data, variables, context)=> {
-      console.log('useSign Success :', data, variables)
       setToken(variables, data?.data.token)
       navigate("/todos")
-    }
+    },
+    // onError: (error, variables, context) => {
+    //   console.log(error, variables, context)
+    // }
   })
 }

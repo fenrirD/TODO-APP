@@ -5,12 +5,11 @@ const initialState = {
 }
 
 export function counter(state: any = initialState, action: { type: 'INCREMENT' | 'DECREMENT', state: any }) {
-  console.log(action,'court!')
   if (typeof state === 'undefined') {
     state = 0 // 상태가 undefined이면 기본값으로 초기화합니다.
   }
   if (action.type === 'INCREMENT') {
-    console.log('INCREMENT',state)
+
     return state.counter + 1
   } else if (action.type === 'DECREMENT') {
     return state.counter - 1
@@ -29,7 +28,6 @@ export function counter2(state: any=initialState2, action: { type: 'INCREMENT' |
     state = 0 // 상태가 undefined이면 기본값으로 초기화합니다.
   }
   if (action.type === 'INCREMENT') {
-    console.log('cnt2 INCREMENT',state)
     return state.counter2 + 1
   } else if (action.type === 'DECREMENT') {
     return state.counter2 - 1
@@ -46,12 +44,10 @@ export function customCreateStore(reducer: any) {
   let handler: Function[] = []
   let currentReducer = reducer
 
-  console.log('currentReducer',currentReducer)
 
   const getState = () => currentState
 
   const dispatch = (action: any) => {
-    console.log(action)
     for (const h of handler) {
       if (typeof h === 'function') h()
     }
@@ -61,7 +57,7 @@ export function customCreateStore(reducer: any) {
       ...currentReducer,
       [reducer]: currentReducer[reducer](currentState, {...action,type:actions})
     }
-    console.log(currentState)
+
     return action
   }
   const subscribe = (listener: Function) => {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import {Button, Stack} from "@mui/material";
@@ -11,13 +11,15 @@ import {useInput} from "../../utils/hooks/useInput";
 import {CustomHelperText} from "../etc/CustomHelperText";
 import useSignIn from "../../utils/hooks/useSignIn";
 import useSignUp from "../../utils/hooks/useSignUp";
+import {CustomStoreContext} from "../../utils/customContext";
+import {CustomSnackbarContext} from "../CustomSnackbar/CustomSnackbarContext";
 
 
-type LoginProps = {
+type props = {
   path: string
 }
 
-export default function Login({path}: LoginProps) {
+export default function Login({path}: props) {
 
   const [isSubmitButtonEnable, setIsSubmitButtonEnable] = useState(true)
   const navigate = useNavigate();
@@ -30,7 +32,11 @@ export default function Login({path}: LoginProps) {
 
   const signIn = useSignIn()
   const signUp = useSignUp()
-
+  //test
+  const context = useContext(CustomStoreContext)
+  const snackbarContext = useContext(CustomSnackbarContext)
+  const counter = context.getState()
+  //
   const user: User = {
     email,
     password,
@@ -46,11 +52,11 @@ export default function Login({path}: LoginProps) {
     setIsSubmitButtonEnable(!(isEmail && isPassword))
   }, [email, password])
 
-  const handleSignInClick = async () => {
+  const handleSignInClick = () => {
     signIn.mutate(user)
   }
 
-  const handleSignUpClick = async () => {
+  const handleSignUpClick = () => {
     signUp.mutate(user)
   }
 
@@ -108,5 +114,6 @@ export default function Login({path}: LoginProps) {
         </Button>
       </div>
     </Box>
+
   );
 }

@@ -8,7 +8,6 @@ export default function usePutTodo() {
   const navigate = useNavigate();
   return useMutation(updateTodo,{
     onSuccess: (data, variables, context) => {
-      console.log('use post Todo', data)
       queryClient.invalidateQueries(["todos"]).then()
       navigate('/todos')
       // Boom baby!

@@ -1,25 +1,29 @@
 import React, {useEffect, useState} from "react";
 import {HElPER_TEXT} from "../../constants/constant";
 
-export const useInput = (initialValue:string, inputId:string, helper?:Function, validator?:Function, ) => {
+/**
+ * 모든 Input 컴포넌트에서 범용성 있게 사용하기 위한 Custom hook
+ * @param initialValue
+ * @param inputId
+ * @param helper
+ * @param validator
+ */
+export const useInput = (initialValue:string, inputId:string, helper?:Function, validator?:Function ) => {
 
   const [value, setValue] = useState(initialValue)
   const targetId = inputId.toUpperCase()
   const [helperText, setHelperText] = useState<React.ReactNode>(HElPER_TEXT[targetId])
-  // console.log('initialValue:', initialValue, "value:",value)
 
   useEffect(() => {
-    // console.log("initialValue - useEffect =>", initialValue)
     setValue(initialValue);
   },[initialValue]);
 
-  const onChange = (event:any) => {
+  const onChange = (event:React.FormEvent<HTMLInputElement|HTMLTextAreaElement>) => {
 
-    const {value} = event.target
+    const {value} = event.currentTarget
     let isValidate = false
     if(typeof validator === 'function') {
       isValidate = validator(value)
-      // console.log(helper)
     }
     if(helper && typeof helper === 'function') {
       setHelperText(helper(HElPER_TEXT[targetId],isValidate))

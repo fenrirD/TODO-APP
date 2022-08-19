@@ -11,7 +11,6 @@ const authValidation = (user: any) => {
 
   const isEmail = emailValidation(user.email)
   const isPassword = passwordValidation(user.password)
-  console.log('authValidation', isEmail, isPassword, user.password)
   return {
     isEmail,
     isPassword

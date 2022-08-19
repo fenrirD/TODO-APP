@@ -1,14 +1,12 @@
 import * as React from 'react';
+import {useState} from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import TextField from "@mui/material/TextField";
 import {Button, CardActions} from '@mui/material';
 import {useNavigate} from "react-router-dom";
-import {useEffect, useMemo, useState, Suspense} from "react";
-import {getTodoById} from "../../utils/apis/todoApi";
 import {useInput} from "../../utils/hooks/useInput";
 import useGetTodoById from "../../utils/hooks/useGetTodoById";
-import useGetTodos from "../../utils/hooks/useGetTodos";
 
 
 export default function TodoDetail({actionParam, handleClickEdit, selectTodoId}: any) {
