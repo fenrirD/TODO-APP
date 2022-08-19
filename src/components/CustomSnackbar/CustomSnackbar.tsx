@@ -1,27 +1,25 @@
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
-import React, {useContext, useState} from "react";
-import useInnerSnackbar from "./hooks/useInnerSnackbar";
+import React, {useContext} from "react";
 import {CustomSnackbarContext} from "./CustomSnackbarContext";
 
 const CustomSnackbar = () => {
 
   const snackbar = useContext(CustomSnackbarContext)
+
   const handleClose = () => {
-    snackbar.on()
+    snackbar.dispatch({type:'OFF'})
   }
-  console.log('CustomSnackbar',snackbar)
   return (
     <Snackbar
       anchorOrigin={{ vertical:"top", horizontal:"right" }}
-      open={snackbar.open}
+      open={snackbar.getState().open}
       onClose={handleClose}
-      message="I love snacks"
       autoHideDuration={3000}
-      // key={vertical + horizontal}
+      // key={vertical + horizontal
     >
-      <Alert severity="success" sx={{ width: '100%' }}>
-        This is a success message!
+      <Alert severity={snackbar.getState().severity} sx={{ width: '100%' }}>
+        {snackbar.getState().message}
       </Alert>
     </Snackbar>
   )

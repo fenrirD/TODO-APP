@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import {Button, Stack} from "@mui/material";
@@ -11,6 +11,8 @@ import {useInput} from "../../utils/hooks/useInput";
 import {CustomHelperText} from "../etc/CustomHelperText";
 import useSignIn from "../../utils/hooks/useSignIn";
 import useSignUp from "../../utils/hooks/useSignUp";
+import {CustomStoreContext} from "../../utils/customContext";
+import {CustomSnackbarContext} from "../CustomSnackbar/CustomSnackbarContext";
 
 
 type props = {
@@ -30,7 +32,11 @@ export default function Login({path}: props) {
 
   const signIn = useSignIn()
   const signUp = useSignUp()
-
+  //test
+  const context = useContext(CustomStoreContext)
+  const snackbarContext = useContext(CustomSnackbarContext)
+  const counter = context.getState()
+  //
   const user: User = {
     email,
     password,
@@ -94,7 +100,7 @@ export default function Login({path}: props) {
       <Stack direction="row-reverse" spacing={2}>
         <Button variant="contained" endIcon={<SendIcon/>}
                 onClick={() => navigate(`/auth/${path === 'signin' ? "signup" : "signin"}`)}>
-          {path === 'signin' ? "Sign In" : "Sign Up"}
+          {path === 'signin' ? "Sign Up" : "Sign In"}
         </Button>
       </Stack>
       {renderAuthForm()}
@@ -109,5 +115,6 @@ export default function Login({path}: props) {
         </Button>
       </div>
     </Box>
+
   );
 }

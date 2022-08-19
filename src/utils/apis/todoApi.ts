@@ -2,7 +2,6 @@ import {Authorization} from "../../constants/constant";
 import customAxios from "../customAxios";
 import {getToken} from "../localStorages";
 import {TodoType} from "../types";
-import {AxiosPromise, AxiosResponse} from "axios";
 
 
 // Token의 변조를 감지하는 방법은?
@@ -26,16 +25,7 @@ axios.interceptors.request.use((config)=>{
 
 const tokenCheck = () => getToken()
 
-const  fun = async () => {
-  return new Promise(resolve => {
-      setTimeout(()=>{
-        resolve('reslove')
-      },5000)
-  })
-}
-
 export const getTodos = async () => {
-  console.log("todos", authorization.token)
   return axios.get(`/todos`)
 }
 
@@ -44,14 +34,13 @@ export const getTodoById = async (id: string) => {
 }
 
 export const createTodo = async (todo: TodoType) => {
-  const r = await axios.post(`/todos/`, todo)
-  return r
+  return axios.post(`/todos/`, todo)
 }
 
 export const deleteTodo = async (id: string) => {
-  return await axios.delete(`/todos/${id}`)
+  return axios.delete(`/todos/${id}`)
 }
 
 export const updateTodo = async (todo: TodoType) => {
-  return await axios.put(`/todos/${todo.id}`, todo)
+  return axios.put(`/todos/${todo.id}`, todo)
 }

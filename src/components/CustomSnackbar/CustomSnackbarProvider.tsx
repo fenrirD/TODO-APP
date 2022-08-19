@@ -1,23 +1,29 @@
 import {CustomSnackbarContext} from "./CustomSnackbarContext"
-import {useReducer, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 
+const CustomSnackbarProvider = ({store, children}: any) => {
+  const [open, setOpen] = useState(store.getState().open)
 
-function snackbarReducer(state: unknown, action: { type: "ON" | "OFF", state: any }) {
-  console.log(state)
-  switch (action.type) {
-    case "ON":
-      return {open: true}
-    case "OFF":
-      return {open: false}
-    default:
-      throw new Error()
-  }
-}
+  useEffect(()=>{
+    store.setListener(setOpen)
+    return () => {
+      store.resetListener()
+    };
+  },[store.getState.open])
 
-const CustomSnackbarProvider = ({children}: any) => {
-  const [open, setOpen] = useState(false)
+  const contextValue = useMemo(() => {
+    return {
+      store,
+    }
+  }, [store])
+
+  const previousState = useMemo(() => store.getState(), [store])
+
+  useEffect(() => {
+  }, [contextValue, previousState])
+
   return (
-    <CustomSnackbarContext.Provider value={{open, on:()=>setOpen(!open)}}>
+    <CustomSnackbarContext.Provider value={{...contextValue.store, open}}>
       {children}
     </CustomSnackbarContext.Provider>
   )

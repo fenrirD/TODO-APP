@@ -29,20 +29,10 @@ const Todo = () => {
   const deleteTodo = useDeleteTodo()
   const putTodo = usePutTodo()
 
-  console.log('todos:', status, data, error, isFetching)
-
   const handleClickLogout = () => {
     removeLocalStorage()
     navigate("/auth/signin")
   }
-
-  // const getTodos = () => {
-  //   console.log('get Todos')
-  //   getTodos().then(r => {
-  //     console.log('getTodos')
-  //     setTodos(r.data.data)
-  //   })
-  // }
 
   useEffect(() => {
     // getTodos()
@@ -50,39 +40,23 @@ const Todo = () => {
 
 
   const handleClickOpen = useCallback(() => {
-    console.log('handle open!')
     setIsOpenTodoDialog(true);
   }, []);
 
   const handleClose = () => {
-    console.log('handle close!')
     setIsOpenTodoDialog(false);
   };
 
   const handleClickCreate = (todo: any) => {
     createTodo.mutate(todo)
     setIsOpenTodoDialog(false);
-    // createTodo(todo).then(r => {
-    //   console.log(r)
-    //   setIsOpenTodoDialog(false);
-    //   // getTodos()
-    // })
   }
   const handleClickEdit = (todo: any) => {
-
-    console.log('handleClickEdit', todo)
     putTodo.mutate(todo)
-    // updateTodo(todo).then(r => {
-    //   console.log(r)
-    //   // getTodos()
-    //   navigate('/todos')
-    // })
   }
 
   const handleClickDelete = (id: string) => {
-    console.log('handleClickDelete', id)
     deleteTodo.mutate(id)
-    // navigate('/todos')
   }
 
   return (
